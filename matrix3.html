@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Matrix Code</title>
+    <script type="text/javascript">
+        var looptime = 30;
+        var fontsize = 15;
+        var changingsymbols = 1;
+        var changingcolor = 1;
+        var differentspeed = 1;
+        var hue = 120; // startvalue: green
+        var color = 'hsl(120, 100%, 45%)'; // default: green
+        var maxwidth = screen.width;
+        var maxheight = screen.height;
+        var isrunning = false;
+        var intval = null;
+
+        window.onload = main;
+        window.onresize = main;
+        window.onkeydown = function (e) {
+            if (e.keyCode == 32) // spacebar
+                toggle_loop();
+            if (e.keyCode == 'C'.charCodeAt(0))
+                changingcolor = !changingcolor;
+            if (e.keyCode == 'D'.charCodeAt(0))
+                differentspeed = !differentspeed;
+            if (e.keyCode == 'S'.charCodeAt(0))
+                changingsymbols = !changingsymbols;
+            if (e.keyCode == 'W'.charCodeAt(0)) {
+                looptime -= 3;
+                if (looptime < 3)
+                    looptime = 3;
+            }
+            if (e.keyCode == 'Q'.charCodeAt(0))
+                looptime += 3;
+            if (isrunning && (e.keyCode == 'Q'.charCodeAt(0) || e.keyCode == 'W'.charCodeAt(0))) {
+                clearInterval(intval);
+                intval = setInterval(draw_matrix, looptime);
+            }
+        }
+
+        var codes = [];
+        var ypos = [];
+        var charcount = 0;
+        var columncount = 0;
+        var forecanvas = null;
+        var backcanvas = null;
+        var forecontent = null;
+        var backcontent = null;
+
+        function resize_canvases() {
+            forecanvas.width = Math.min(window.innerWidth, maxwidth);
+            forecanvas.height = Math.min(window.innerHeight, maxheight);
+            backcanvas.width = forecanvas.width;
+            backcanvas.height = forecanvas.height;
+            charcount = parseInt(forecanvas.height / fontsize * 1.0);
+            columncount = parseInt(forecanvas.width / fontsize);
+        }
+
+        function get_randomchar() {
+            // http://www.kirupa.com/forum/showthread.php?340198-The-Matrix-Movie-Fonts
+            // http://de.wikipedia.org/wiki/Unicodeblock_Katakana
+            return parseInt(Math.random() * 95 + 12448);
+        }
+
+        function get_randompos() {
+            var charcount = parseInt(forecanvas.height / fontsize);
+            var startcell = parseInt(Math.random() * charcount * 2)
+            return parseInt(-1 * startcell * fontsize);
+        }
+
+        function fill_array(arr, func) {
+            for (i = 0; i < arr.length; i++)
+                arr[i] = parseInt(func());
+        }
+
+        function set_symbol(symbolindex, x, y) {
+            var symbol = String.fromCharCode(codes[symbolindex]);
+            forecontent.fillText(symbol, x, y - 1);
+        }
+
+        function change_symbols() {
+            var randomcolumn = 0;
+            var randomrow = 0;
+            var randomindex = 0;
+            var x = 0;
+            var y = 0;
+            for (k = 0; k < charcount * 1.0; k++) {
+                randomcolumn = parseInt(Math.random() * columncount);
+                randomrow = parseInt(Math.random() * charcount);
+                x = randomcolumn * fontsize;
+                y = randomrow * fontsize;
+                randomindex = randomcolumn * randomrow;
+                codes[randomindex] = get_randomchar();
+                forecontent.fillStyle = 'black';
+                forecontent.globalCompositeOperation = "source-over";
+                forecontent.fillRect(x, y, fontsize, fontsize);
+                forecontent.fillStyle = 'white';
+                forecontent.globalCompositeOperation = "destination-out";
+                set_symbol(randomindex, x, y + fontsize);
+            }
+        }
+
+        function draw_matrix() {
+            // video example: https://www.youtube.com/watch?v=8ZdpA3p9ZMY
+            var x = 0;
+            var y = 0;
+            var grad = null;
+            backcontent.clearRect(0, 0, backcanvas.width, backcanvas.height);
+
+            for (i = 0; i < columncount; i++) {
+                ypos[i] += fontsize * 0.5;
+                if (differentspeed)
+                    if ((i + parseInt(Date.now() / 10000 % 10)) % parseInt(columncount * 0.2) == 0)
+                        ypos[i] += ((i + 1) % fontsize) * 1.5;
+
+                y = ypos[i];
+                if (y < 0)
+                    continue;
+                x = parseInt(i * fontsize);
+
+                grad = backcontent.createLinearGradient(x, y - charcount * fontsize, x, y);
+                grad.addColorStop(0.0, 'hsla(0, 0%, 0%, 0)');
+                grad.addColorStop(0.4, color);
+                grad.addColorStop(1 - 4 / charcount, color);
+                grad.addColorStop(1 - 1 / charcount, 'white');
+                backcontent.fillStyle = grad;
+                backcontent.fillRect(x, parseInt(y - charcount * fontsize), fontsize, charcount * fontsize);
+
+                if (y > forecanvas.height + charcount * fontsize)
+                    if (Math.random() > 0.5)
+                        y = 0;
+
+                ypos[i] = y;
+            }
+            if (changingsymbols)
+                change_symbols();
+            if (changingcolor) {
+                hue += 0.3;
+                hue = (hue > 360) ? 0 : hue;
+                color = 'hsl(' + hue + ', 100%, 40%)';
+            }
+        }
+
+        function main() {
+            forecanvas = document.getElementById('forelayer');
+            backcanvas = document.getElementById('backlayer');
+            if (forecanvas.getContext && backcanvas.getContext) {
+                resize_canvases();
+                if (isrunning)
+                    toggle_loop();
+                codes = new Array(parseInt((parseInt(4096 / fontsize) + 1) * (parseInt(2160 / fontsize) + 1)));
+                fill_array(codes, get_randomchar);
+                forecontent = forecanvas.getContext('2d');
+                forecontent.fillStyle = 'black';
+                forecontent.fillRect(0, 0, forecanvas.width, forecanvas.height);
+                forecontent.fillStyle = 'white';
+                // https://developer.mozilla.org/samples/canvas-tutorial/6_1_canvas_composite.html
+                forecontent.globalCompositeOperation = "destination-out";
+                forecontent.font = fontsize + 'px monospace';
+                for (y = 0; y < forecanvas.height; y += fontsize)
+                    for (x = 0; x < forecanvas.width; x += fontsize) {
+                        index = parseInt(x / fontsize + 1) * parseInt(y / fontsize + 1);
+                        set_symbol(index, x, y);
+                    }
+                ypos = new Array(parseInt(4096 / fontsize) + 1);
+                fill_array(ypos, get_randompos);
+                backcontent = backcanvas.getContext('2d');
+                toggle_loop();
+            }
+        }
+
+        function toggle_loop() {
+            if (isrunning)
+                clearInterval(intval);
+            else
+                intval = setInterval(draw_matrix, looptime);
+            isrunning = !isrunning;
+        }
+    </script>
+    <style type="text/css">
+        body {
+            overflow: hidden;
+            margin: 0px;
+            background-color: black;
+        }
+        #forelayer,
+        #backlayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #forelayer {
+            z-index: 2;
+        }
+        #backlayer {
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="forelayer">
+        Your browser does not support HTML5 canvas. Please update your browser or try another one.
+    </canvas>
+    <canvas id="backlayer">
+        Your browser does not support HTML5 canvas. Please update your browser or try another one.
+    </canvas>
+</body>
+
+</html>
