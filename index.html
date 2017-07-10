@@ -113,7 +113,7 @@
             for (i = 0; i < columncount; i++) {
                 ypos[i] += fontsize * 0.5;
                 if (differentspeed)
-                    if ((i + parseInt(Date.now() / 10000 % 10)) % parseInt(columncount * 0.2) == 0)
+                    if (fastcolumns[i] == 1)
                         ypos[i] += ((i + 1) % fontsize) * 1.5;
 
                 y = ypos[i];
@@ -131,8 +131,14 @@
 
                 if (y > forecanvas.height + charcount * fontsize)
                     if (Math.random() > 0.5)
+                    {
                         y = 0;
-
+                        if (fastcolumns[i] == 1)
+                            fastcolumns[i] = 0;
+                        var isfastcolumn = Math.random() > 0.9;
+                        if (isfastcolumn)
+                          fastcolumns[i] = 1;
+                    }
                 ypos[i] = y;
             }
             if (changingsymbols)
@@ -166,6 +172,8 @@
                         set_symbol(index, x, y);
                     }
                 ypos = new Array(parseInt(4096 / fontsize) + 1);
+                fastcolumns = new Array(columncount);
+                fastcolumns.fill(0);
                 fill_array(ypos, get_randompos);
                 backcontent = backcanvas.getContext('2d');
                 toggle_loop();
