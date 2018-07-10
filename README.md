@@ -1,4 +1,4 @@
-# Matrixcode
+# Matrix Code
 
 Show matrix code https://danieldreke.github.io/matrixcode  
 Color changes smoothly automatically.  
