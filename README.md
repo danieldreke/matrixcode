@@ -1,4 +1,4 @@
-# Matrix Code
+# Interactive Matrix Code
 
 To start click https://danieldreke.github.io/matrixcode
 * Color changes smoothly automatically
