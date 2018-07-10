@@ -45,18 +45,18 @@
         var ypos = [];
         var charcount = 0;
         var columncount = 0;
-        var forecanvas = null;
+        var frontcanvas = null;
         var backcanvas = null;
-        var forecontent = null;
+        var frontcontent = null;
         var backcontent = null;
 
         function resize_canvases() {
-            forecanvas.width = Math.min(window.innerWidth, maxwidth);
-            forecanvas.height = Math.min(window.innerHeight, maxheight);
-            backcanvas.width = forecanvas.width;
-            backcanvas.height = forecanvas.height;
-            charcount = parseInt(forecanvas.height / fontsize * 1.0);
-            columncount = parseInt(forecanvas.width / fontsize);
+            frontcanvas.width = Math.min(window.innerWidth, maxwidth);
+            frontcanvas.height = Math.min(window.innerHeight, maxheight);
+            backcanvas.width = frontcanvas.width;
+            backcanvas.height = frontcanvas.height;
+            charcount = parseInt(frontcanvas.height / fontsize * 1.0);
+            columncount = parseInt(frontcanvas.width / fontsize);
         }
 
         function get_randomchar() {
@@ -66,7 +66,7 @@
         }
 
         function get_randompos() {
-            var charcount = parseInt(forecanvas.height / fontsize);
+            var charcount = parseInt(frontcanvas.height / fontsize);
             var startcell = parseInt(Math.random() * charcount * 2)
             return parseInt(-1 * startcell * fontsize);
         }
@@ -78,7 +78,7 @@
 
         function set_symbol(symbolindex, x, y) {
             var symbol = String.fromCharCode(codes[symbolindex]);
-            forecontent.fillText(symbol, x, y - 1);
+            frontcontent.fillText(symbol, x, y - 1);
         }
 
         function change_symbols() {
@@ -94,11 +94,11 @@
                 y = randomrow * fontsize;
                 randomindex = randomcolumn * randomrow;
                 codes[randomindex] = get_randomchar();
-                forecontent.fillStyle = 'black';
-                forecontent.globalCompositeOperation = "source-over";
-                forecontent.fillRect(x, y, fontsize, fontsize);
-                forecontent.fillStyle = 'white';
-                forecontent.globalCompositeOperation = "destination-out";
+                frontcontent.fillStyle = 'black';
+                frontcontent.globalCompositeOperation = "source-over";
+                frontcontent.fillRect(x, y, fontsize, fontsize);
+                frontcontent.fillStyle = 'white';
+                frontcontent.globalCompositeOperation = "destination-out";
                 set_symbol(randomindex, x, y + fontsize);
             }
         }
@@ -129,7 +129,7 @@
                 backcontent.fillStyle = grad;
                 backcontent.fillRect(x, parseInt(y - charcount * fontsize), fontsize, charcount * fontsize);
 
-                if (y > forecanvas.height + charcount * fontsize)
+                if (y > frontcanvas.height + charcount * fontsize)
                     if (Math.random() > 0.5)
                     {
                         y = 0;
@@ -151,23 +151,23 @@
         }
 
         function main() {
-            forecanvas = document.getElementById('forelayer');
+            frontcanvas = document.getElementById('frontlayer');
             backcanvas = document.getElementById('backlayer');
-            if (forecanvas.getContext && backcanvas.getContext) {
+            if (frontcanvas.getContext && backcanvas.getContext) {
                 resize_canvases();
                 if (isrunning)
                     toggle_loop();
                 codes = new Array(parseInt((parseInt(4096 / fontsize) + 1) * (parseInt(2160 / fontsize) + 1)));
                 fill_array(codes, get_randomchar);
-                forecontent = forecanvas.getContext('2d');
-                forecontent.fillStyle = 'black';
-                forecontent.fillRect(0, 0, forecanvas.width, forecanvas.height);
-                forecontent.fillStyle = 'white';
+                frontcontent = frontcanvas.getContext('2d');
+                frontcontent.fillStyle = 'black';
+                frontcontent.fillRect(0, 0, frontcanvas.width, frontcanvas.height);
+                frontcontent.fillStyle = 'white';
                 // https://developer.mozilla.org/samples/canvas-tutorial/6_1_canvas_composite.html
-                forecontent.globalCompositeOperation = "destination-out";
-                forecontent.font = fontsize + 'px monospace';
-                for (y = 0; y < forecanvas.height; y += fontsize)
-                    for (x = 0; x < forecanvas.width; x += fontsize) {
+                frontcontent.globalCompositeOperation = "destination-out";
+                frontcontent.font = fontsize + 'px monospace';
+                for (y = 0; y < frontcanvas.height; y += fontsize)
+                    for (x = 0; x < frontcanvas.width; x += fontsize) {
                         index = parseInt(x / fontsize + 1) * parseInt(y / fontsize + 1);
                         set_symbol(index, x, y);
                     }
@@ -194,13 +194,13 @@
             margin: 0px;
             background-color: black;
         }
-        #forelayer,
+        #frontlayer,
         #backlayer {
             position: absolute;
             top: 0;
             left: 0;
         }
-        #forelayer {
+        #frontlayer {
             z-index: 2;
         }
         #backlayer {
@@ -210,7 +210,7 @@
 </head>
 
 <body>
-    <canvas id="forelayer">
+    <canvas id="frontlayer">
         Your browser does not support HTML5 canvas. Please update your browser or try another one.
     </canvas>
     <canvas id="backlayer">
