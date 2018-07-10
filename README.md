@@ -1,6 +1,6 @@
 # Matrix Code
 
-Show matrix code https://danieldreke.github.io/matrixcode  
+Start https://danieldreke.github.io/matrixcode  
 Color changes smoothly automatically.  
 Press 'c' to turn off/on.  
 Best viewed in fullscreen.  
