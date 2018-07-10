@@ -2,15 +2,15 @@
 
 To start click https://danieldreke.github.io/matrixcode
 * Color changes smoothly automatically
-* Press 'c' to turn off/on
+* Press 'c' to stop changing color.
 * Best viewed in fullscreen
 * More key bindings see below
 
 ## Key Bindings
 
-Space Bar - Toggle pause  
-C - Toggle change of color  
-S - Toggle change of symbols  
-D - Toggle same/different speed
+Space Bar - Play/Pause  
+C - Enable/Disable changing color  
+S - Enable/Disable changing symbols  
+D - Enable/Disable different speed  
 W - Faster  
 Q - Slower  
