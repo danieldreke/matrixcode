@@ -2,7 +2,7 @@
 
 To start click https://danieldreke.github.io/matrixcode
 * Color changes smoothly automatically
-* Press 'c' to stop changing color
+* Press 'c' to freeze color (press again to unfreeze)  
 * Best viewed in fullscreen
 * More key bindings see below
 
