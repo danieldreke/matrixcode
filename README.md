@@ -8,7 +8,7 @@ To start open [danieldreke.com/matrixcode](https://danieldreke.github.io/matrixc
 
 ## Key Bindings
 
-`Space Bar` - Play/Pause  
+`Space` - Play/Pause  
 `C` - Enable/Disable changing color  
 `S` - Enable/Disable changing symbols  
 `D` - Enable/Disable different speed  
