@@ -1,6 +1,6 @@
 # Interactive Matrix Code
 
-To start open [danieldreke.com/matrixcode](https://danieldreke.github.io/matrixcode)
+To start open [danieldreke.github.io/matrixcode](https://danieldreke.github.io/matrixcode/)
 * Color changes smoothly automatically
 * Press `C` to freeze/unfreeze color
 * Best viewed in fullscreen
