@@ -1,5 +1,7 @@
 # Interactive Matrix Code
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 To start open [danieldreke.github.io/matrixcode](https://danieldreke.github.io/matrixcode/)
 * Color changes smoothly automatically
 * Press `C` to freeze/unfreeze color
